@@ -1,0 +1,2 @@
+Standalone Indentity Server implementation - https://www.scottbrady91.com/Identity-Server/Identity-Server-3-Standalone-Implementation-Part-1
+Enable SSL for testing - http://www.asp.net/web-api/overview/security/working-with-ssl-in-web-api
