@@ -10,7 +10,8 @@
     <link href="Content/site.css" rel="stylesheet" />
 </head>
 
-<body ng-app="tripGallery">
+<body ng-app="tripGallery"
+      ng-controller="mainController as vm">
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div><img src="angularlogo.png" class="headerLogo" /></div>
@@ -20,7 +21,10 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                                 
+                        <a href=""
+                           ng-if="!vm.mgr.expired"
+                           ng-bind-template="Logout ({{vm.mgr.profile.given_name}} {{vm.mgr.profile.family_name}})"
+                           ng-click="vm.logOutOfIdSrv()"></a>
                     </li>
                 </ul>
             </div>
@@ -49,7 +53,6 @@
     <script src="common/tripForCreationResource.js"></script>
     <script src="common/pictureResource.js"></script>
     <script src="common/pictureForCreationResource.js"></script>
-    <script src="common/tokenContainer.js"></script>
 
     <!-- Controllers -->
     <script src="app/trips/tripIndexController.js"></script>
@@ -57,8 +60,10 @@
     <script src="app/trips/tripAlbumController.js"></script>
     <script src="app/pictures/pictureIndexController.js"></script>
     <script src="app/pictures/pictureCreateController.js"></script>
-    <script src="app/login/loginController.js"></script>
-     
+    <script src="app/mainController.js"></script>
+
+    <!-- oidc-token-manager -->
+    <script src="Scripts/oidc-token-manager.js"></script>
 </body>
 
-    </html>
+</html>

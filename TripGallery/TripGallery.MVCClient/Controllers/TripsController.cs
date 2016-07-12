@@ -10,17 +10,27 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using IdentityModel.Client;
 using TripGallery.DTO;
 using TripGallery.MVCClient.Helpers;
 using TripGallery.MVCClient.Models;
 
 namespace TripGallery.MVCClient.Controllers
-{
+{ 
+    [Authorize]
     public class TripsController : Controller
     {
         // GET: Trips
         public async Task<ActionResult> Index()
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                var identity = this.User.Identity as ClaimsIdentity;
+                foreach (var claim in identity.Claims)
+                {
+                    Debug.WriteLine(claim.Type + " - " + claim.Value);
+                }
+            }
 
             var httpClient = TripGalleryHttpClient.GetClient();
 
@@ -60,7 +70,29 @@ namespace TripGallery.MVCClient.Controllers
 
         public async Task<ActionResult> Album(Guid tripId)
         {
-            return View();
+            // get the access token.
+            var token = (User.Identity as ClaimsIdentity).FindFirst("access_token").Value;
+
+            UserInfoClient userInfoClient = new UserInfoClient(
+                   new Uri(Constants.TripGallerySTSUserInfoEndpoint),
+                   token);
+
+            var userInfoResponse = await userInfoClient.GetAsync();
+
+            if (!userInfoResponse.IsError)
+            {
+                // create an object to return (dynamic Expando - anonymous 
+                // types won't allow access to their properties from the view)
+                dynamic addressInfo = new ExpandoObject();
+                addressInfo.Address = userInfoResponse.Claims.First(c => c.Item1 == "address").Item2;
+
+                return View(addressInfo);
+            }
+            else
+            {
+                var exception = new Exception("Problem getting your address.  Please contact your administrator.");
+                return View("Error", new HandleErrorInfo(exception, "Trips", "Album"));
+            }
         }
 
         // POST: Trips/Create

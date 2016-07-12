@@ -3,11 +3,20 @@
     angular
         .module("tripGallery")
         .controller("tripIndexController",
-                     ["tripResource", "$filter",
+                     ["tripResource", "$filter", "OidcManager",
                          TripIndexController]);
 
-    function TripIndexController(tripResource, $filter) {
+    function TripIndexController(tripResource, $filter, OidcManager) {
         var vm = this;
+
+        vm.mgr = OidcManager.OidcTokenManager();
+
+        vm.getUserIdentifier = function() {
+            if (!vm.mgr.expired) {
+                // combine issuer + sub. This uniquely identifies a user on OpenID
+                return "https://tripcompanysts/identity" + vm.mgr.profile.sub;
+            }
+        }
 
         vm.switchPrivacyLevel = function (tripId)
         {         

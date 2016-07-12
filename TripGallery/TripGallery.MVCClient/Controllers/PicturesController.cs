@@ -12,7 +12,7 @@ using TripGallery.MVCClient.Models;
 
 namespace TripGallery.MVCClient.Controllers
 {
-
+    [Authorize] 
     public class PicturesController : Controller
     {
 

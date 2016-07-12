@@ -6,8 +6,10 @@
 
 <h2 class="leftMarginDefault">My Trip Gallery</h2>
 
-
-<div class="btn btn-default leftMarginDefault bottomMarginDefault">@Html.ActionLink("Add a Trip", "Create")</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="btn btn-default leftMarginDefault bottomMarginDefault">@Html.ActionLink("Add a Trip", "Create")</div>
+}
 
 <div class="container">
     @foreach (var item in Model.Trips)
@@ -38,23 +40,26 @@
                 <div>@item.Description</div>
 
                 <div>
-
-                    @if (item.IsPublic)
+                    @if (item.OwnerId == User.Identity.Name)
                     {
-                        @Html.ActionLink("Make private", "SwitchPrivacyLevel",
-                            new { id = item.Id, isPublic = item.IsPublic })
+                        if (item.IsPublic)
+                        {
+                            @Html.ActionLink("Make private", "SwitchPrivacyLevel",
+                                new { id = item.Id, isPublic = item.IsPublic });
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Make public", "SwitchPrivacyLevel",
+                                new { id = item.Id, isPublic = item.IsPublic });
+                        }
                     }
-                    else
-                    {
-                        @Html.ActionLink("Make public", "SwitchPrivacyLevel",
-                            new { id = item.Id, isPublic = item.IsPublic })
-                    }
+                    
 
-                    @Html.Raw(" | ")
+                    @Html.Raw(" | ");
 
                     @Html.ActionLink("Pictures", "Index", "Pictures", new { tripId = item.Id }, null)
 
-                    @Html.Raw(" | ")
+                    @Html.Raw(" | ");
 
                     @Html.ActionLink("Create album", "Album", "Trips", new { tripId = item.Id }, null)
 

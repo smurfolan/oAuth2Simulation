@@ -5,22 +5,23 @@
         .module("common.services")
         .factory("tripResource",
                 ["$resource",
-                 "appSettings",
+                 "appSettings", 
                     tripResource])
 
     function tripResource($resource, appSettings) {
-        return $resource(appSettings.tripGalleryAPI + "/api/trips/:tripId", null,
+         return $resource(appSettings.tripGalleryAPI + "/api/trips/:tripId", null,
             {
                 'patch':
-                    {
+                    { 
                         method: 'PATCH',
-                        transformRequest: createJsonPatchDocument
+                        transformRequest: createJsonPatchDocument 
                     }
+
             });
     };
 
     var createJsonPatchDocument = function (data) {
-
+         
         // create a JsonPatchDocument for the resource - the only
         // thing that can be updated in this specific case is the
         // isPublic boolean. 

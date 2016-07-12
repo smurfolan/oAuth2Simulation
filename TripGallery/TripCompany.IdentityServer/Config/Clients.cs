@@ -24,7 +24,7 @@ namespace TripCompany.IdentityServer.Config
                     ClientSecrets = new List<Secret>()
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
-                    }                    
+                    } 
                 }
                 ,
                 new Client 
@@ -54,7 +54,7 @@ namespace TripCompany.IdentityServer.Config
                      Flow = Flows.Implicit, 
                      AllowAccessToAllScopes = true,
 
-                    // redirect = URI of the Angular application callback page
+                    // redirect = URI of the Angular application
                     RedirectUris = new List<string>
                     { 
                         TripGallery.Constants.TripGalleryAngular + "callback.html"
@@ -72,6 +72,18 @@ namespace TripCompany.IdentityServer.Config
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
                     }                    
+                },
+                new Client
+                {
+                     ClientId = "tripgalleryhybrid",
+                     ClientName = "Trip Gallery (Hybrid)",
+                     Flow = Flows.Hybrid,
+                     AllowAccessToAllScopes = true,
+
+                    RedirectUris = new List<string>()
+                    {
+                        TripGallery.Constants.TripGalleryMVC
+                    }
                 }
 
              };

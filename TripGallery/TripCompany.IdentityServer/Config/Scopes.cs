@@ -19,7 +19,10 @@ namespace TripCompany.IdentityServer.Config
                         DisplayName = "Gallery Management",
                         Description = "Allow the application to manage galleries on your behalf.",
                         Type = ScopeType.Resource 
-                    }
+                    },
+                    StandardScopes.OpenId,
+                    StandardScopes.ProfileAlwaysInclude, // adds profile info into the identity token.
+                    StandardScopes.Address
                 };
         }
     }

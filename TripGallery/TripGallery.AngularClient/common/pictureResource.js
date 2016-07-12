@@ -14,7 +14,8 @@
         //resource(url, paramDefaults, actions)
 
         return $resource(appSettings.tripGalleryAPI + "/api/trips/:tripId/pictures/:pictureId", null,
-            { 
+            {
+               
             });
     }
 }());

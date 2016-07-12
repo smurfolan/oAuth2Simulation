@@ -11,7 +11,6 @@ namespace TripGallery.MVCClient.Helpers
     // code adjusted from Thinktecture's client model (thinktecture.github.com)
     public static class TokenHelper
     {
-
         public static void DecodeAndWrite(string token)
         {
             try

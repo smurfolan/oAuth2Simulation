@@ -31,11 +31,6 @@ namespace TripCompany.IdentityServer
                 idServerServiceFactory.CorsPolicyService = new
                     Registration<IdentityServer3.Core.Services.ICorsPolicyService>(corsPolicyService);
 
-                // example of using a custom CORS policy service
-                //var customCorsPolicyService = new CustomCorsPolicyService();
-                //idServerServiceFactory.CorsPolicyService = new
-                //   Registration<IdentityServer3.Core.Services.ICorsPolicyService>(customCorsPolicyService);
-
                 var options = new IdentityServerOptions
                 {
                     Factory = idServerServiceFactory,

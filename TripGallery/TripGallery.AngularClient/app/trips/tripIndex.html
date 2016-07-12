@@ -29,7 +29,8 @@
                 <div class="h3">{{trip.name}}</div>
                 <div>{{trip.description}}</div>
 
-                <div>                 
+                <div>
+                    <span ng-if="vm.getUserIdentifier() === trip.ownerId">
                         <a href=""
                            ng-if="trip.isPublic === false"
                            ng-click="vm.switchPrivacyLevel(trip.id)">
@@ -41,8 +42,9 @@
                             Make private
                         </a>
                         |
+                    </span>
                     <a ng-href="#/trips/{{trip.id}}/pictures">Pictures</a>
-                    | <a ng-href="#/trips/{{trip.id}}/createalbum">Create album</a>                   
+                    | <a ng-href="#/trips/{{trip.id}}/createalbum">Create album</a>
                 </div>
             </div> 
                 

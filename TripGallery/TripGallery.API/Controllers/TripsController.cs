@@ -10,8 +10,9 @@ using TripGallery.API.UnitOfWork.Trip;
 
 namespace TripGallery.API.Controllers
 {
-    [Authorize]
+   
     [EnableCors("https://localhost:44316", "*", "GET, POST, PATCH")]
+    [Authorize]
     public class TripsController : ApiController
     {
 
@@ -76,8 +77,9 @@ namespace TripGallery.API.Controllers
                 return InternalServerError();
             }
         }
-        
 
+
+ 
         [Route("api/trips")]
         [HttpPost]
         public IHttpActionResult Post([FromBody]DTO.TripForCreation tripForCreation)

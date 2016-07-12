@@ -9,10 +9,7 @@
                     tripForCreationResource])
 
     function tripForCreationResource($resource, appSettings) {
-        return $resource(appSettings.tripGalleryAPI + "/api/trips", null,
-            {
-                       
-            });
+        return $resource(appSettings.tripGalleryAPI + "/api/trips", null,{});
     }
 }());
 
