@@ -13,5 +13,12 @@ namespace TripGallery.MVCClient.Controllers
             Request.GetOwinContext().Authentication.SignOut();
             return Redirect("/");
         }
+
+        // End-point used for the single sign-out option.
+        public ActionResult LocalLogout()
+        {
+            Request.GetOwinContext().Authentication.SignOut();
+            return Redirect("/");
+        }
     }
 }

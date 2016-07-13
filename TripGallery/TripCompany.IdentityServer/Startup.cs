@@ -28,6 +28,13 @@ namespace TripCompany.IdentityServer
                                 .UseInMemoryScopes(Scopes.Get())
                                 .UseInMemoryUsers(Users.Get());
 
+                var defaultViewServiceOptions = new DefaultViewServiceOptions
+                {
+                    CacheViews = false
+                };
+
+                idServerServiceFactory.ConfigureDefaultViewService(defaultViewServiceOptions);
+
                 idServerServiceFactory.CorsPolicyService = new
                     Registration<IdentityServer3.Core.Services.ICorsPolicyService>(corsPolicyService);
 
@@ -41,7 +48,16 @@ namespace TripCompany.IdentityServer
 
                     AuthenticationOptions = new AuthenticationOptions()
                     {
-                        EnablePostSignOutAutoRedirect = true
+                        EnablePostSignOutAutoRedirect = true,
+                        PostSignOutAutoRedirectDelay = 2
+                    },
+                    CspOptions = new CspOptions()
+                    {
+                        Enabled = false
+                        // once available, leave enabled at true and use:
+                        // FrameSrc = "https://localhost:44318 https://localhost:44316"
+                        // or
+                        // FrameSrc = "*" for all URIs
                     }
 
                 };
