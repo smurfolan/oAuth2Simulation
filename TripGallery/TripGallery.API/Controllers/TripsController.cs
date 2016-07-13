@@ -10,9 +10,10 @@ using TripGallery.API.UnitOfWork.Trip;
 
 namespace TripGallery.API.Controllers
 {
-   
-    [EnableCors("https://localhost:44316", "*", "GET, POST, PATCH")]
+
+
     [Authorize]
+    [EnableCors("https://localhost:44316", "*", "GET, POST, PATCH")]
     public class TripsController : ApiController
     {
 
@@ -22,8 +23,10 @@ namespace TripGallery.API.Controllers
         public IHttpActionResult Get()
         {
             try
-            {            
-                using (var uow = new GetTrips(null))
+            {
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new GetTrips(ownerId))
                 {
                     var uowResult = uow.Execute();
 
@@ -50,8 +53,10 @@ namespace TripGallery.API.Controllers
         public IHttpActionResult Get(Guid tripId)
         {
             try
-            { 
-                using (var uow = new GetTrip(null, tripId))
+            {
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new GetTrip(ownerId, tripId))
                     {
                         var uowResult = uow.Execute();
 
@@ -79,15 +84,17 @@ namespace TripGallery.API.Controllers
         }
 
 
- 
+
+        [Authorize(Roles="PayingUser")]
         [Route("api/trips")]
         [HttpPost]
         public IHttpActionResult Post([FromBody]DTO.TripForCreation tripForCreation)
         {
             try
             {                 
-          
-                using (var uow = new CreateTrip(null))
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new CreateTrip(ownerId))
                 {
                     var uowResult = uow.Execute(tripForCreation);
 
@@ -96,12 +103,12 @@ namespace TripGallery.API.Controllers
                         case UnitOfWork.UnitOfWorkStatus.Ok:
                             return Created<DTO.Trip>
                             (Request.RequestUri + "/" + uowResult.Result.Id.ToString(), uowResult.Result);
-                                               
-                        case UnitOfWork.UnitOfWorkStatus.Invalid:
-                            return BadRequest();
 
                         case UnitOfWork.UnitOfWorkStatus.Forbidden:
                             return StatusCode(HttpStatusCode.Forbidden);
+
+                        case UnitOfWork.UnitOfWorkStatus.Invalid:
+                            return BadRequest();
 
                         default:
                             return InternalServerError();
@@ -109,11 +116,13 @@ namespace TripGallery.API.Controllers
                 }
             }
             catch (Exception)
-            {             
+            {
+             
                 return InternalServerError();
             }
         }
-         
+ 
+
         [Route("api/trips/{tripId}")]
         [HttpPatch]
         public IHttpActionResult Patch(Guid tripId,
@@ -123,8 +132,10 @@ namespace TripGallery.API.Controllers
             try
             {
 
-             
-                using (var uow = new PartiallyUpdateTrip(null, tripId))
+                // is the user allowed to update THIS trip? => check in UnitOfWork
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new PartiallyUpdateTrip(ownerId, tripId))
                 {
                     var uowResult = uow.Execute(tripPatchDocument);
 
@@ -150,8 +161,12 @@ namespace TripGallery.API.Controllers
             catch (Exception)
             {
                 return InternalServerError();
-            } 
+            }
+
+
         }
+         
+
     }
 }
 

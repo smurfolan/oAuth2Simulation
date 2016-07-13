@@ -10,9 +10,8 @@ using TripGallery.API.UnitOfWork.Picture;
 
 namespace TripGallery.API.Controllers
 {
-   
-    [EnableCors("https://localhost:44316", "*", "GET, POST, DELETE")]
     [Authorize]
+    [EnableCors("https://localhost:44316", "*", "GET, POST, DELETE")]
     public class PicturesController : ApiController
     {
 
@@ -22,8 +21,9 @@ namespace TripGallery.API.Controllers
         {
             try
             {
-          
-                using (var uow = new GetPictures(null, tripId))
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new GetPictures(ownerId, tripId))
                 {
                     var uowResult = uow.Execute();
 
@@ -56,8 +56,11 @@ namespace TripGallery.API.Controllers
         public IHttpActionResult Post(Guid tripId, [FromBody]DTO.PictureForCreation pictureForCreation)
         {
             try
-            { 
-                using (var uow = new CreatePicture(null, tripId))
+            {
+
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new CreatePicture(ownerId, tripId))
                 {
                     var uowResult = uow.Execute(pictureForCreation);
 
@@ -88,15 +91,18 @@ namespace TripGallery.API.Controllers
             }
         }
 
-         
+
+        // TODO: is the user allowed to delete?
         [Route("api/trips/{tripId}/pictures/{pictureId}")]
         [HttpDelete]
         public IHttpActionResult Delete(Guid tripId, Guid pictureId)
         {
             try
             {
-          
-                using (var uow = new DeletePicture(null, tripId, pictureId))
+                // the user can delete.  But can he also delete THIS picture?
+                string ownerId = TokenIdentityHelper.GetOwnerIdFromToken();
+
+                using (var uow = new DeletePicture(ownerId, tripId, pictureId))
                 {
                     var uowResult = uow.Execute();
 

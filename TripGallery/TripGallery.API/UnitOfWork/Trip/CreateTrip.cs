@@ -36,13 +36,12 @@ namespace TripGallery.API.UnitOfWork.Trip
             {
                 return new UnitOfWorkResult<DTO.Trip>(null, UnitOfWorkStatus.Invalid);
             }
- 
+
             if (_ownerId == null)
             {
                 // cannot create a trip when there's no owner id
                 return new UnitOfWorkResult<DTO.Trip>(null, UnitOfWorkStatus.Forbidden);
             }
-
             // map to entity
             var tripEntity = Mapper.Map<DTO.TripForCreation, Repository.Entities.Trip>(input);
 

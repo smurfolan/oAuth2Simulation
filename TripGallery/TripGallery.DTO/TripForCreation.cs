@@ -10,8 +10,7 @@ namespace TripGallery.DTO
     {  
         public string Name { get; set; }
         public string Description { get; set; }
-   
-        public bool IsPublic { get; set; }
+           public bool IsPublic { get; set; }
         public byte[] MainPictureBytes { get; set; }
 
         public TripForCreation()

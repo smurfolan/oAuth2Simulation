@@ -15,9 +15,11 @@ namespace TripGallery.MVCClient.Helpers
     {
 
         public static HttpClient GetClient()
-        {
+        { 
             HttpClient client = new HttpClient();
 
+            // Since our API has 'app.UseIdentityServerBearerTokenAuthentication' option activated
+            // we must assign bearer token to our web api request
             var token = (HttpContext.Current.User.Identity as ClaimsIdentity).FindFirst("access_token");
             if (token != null)
             {
@@ -32,6 +34,6 @@ namespace TripGallery.MVCClient.Helpers
 
             return client;
         }
-
+ 
     }
 }

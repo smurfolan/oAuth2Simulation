@@ -1,10 +1,10 @@
 ﻿(function () {
     "use strict";
     angular
-        .module("tripGallery")
+        .module("tripGallery")      
         .controller("mainController",
                      ["OidcManager", MainController]);
-
+ 
 
     function MainController(OidcManager) {
         var vm = this;
@@ -15,16 +15,15 @@
         }
 
         vm.logOutOfIdSrv = function () {
-            debugger;
             vm.mgr.redirectForLogout();
-        }
-
+        } 
+      
         vm.mgr = OidcManager.OidcTokenManager();
 
         // no id token or expired => redirect to get one
         if (vm.mgr.expired) {
             vm.mgr.redirectForToken();
-        }
+        } 
     }
 
 }());

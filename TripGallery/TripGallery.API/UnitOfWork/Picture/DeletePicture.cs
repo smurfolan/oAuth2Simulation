@@ -52,8 +52,7 @@ namespace TripGallery.API.UnitOfWork.Picture
                 // not the picture's owner
                 return new UnitOfWorkResult(UnitOfWorkStatus.Forbidden);
             }
-
-        
+ 
             _tripRepository.DeletePicture(_tripId, _pictureId);
 
             _ctx.SaveChanges();

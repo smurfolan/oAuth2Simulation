@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IdentityServer3.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IdentityServer3.Core.Models;
 using TripGallery;
 
 namespace TripCompany.IdentityServer.Config
@@ -14,7 +14,7 @@ namespace TripCompany.IdentityServer.Config
         {
             return new[]
              { 
-                new Client 
+                 new Client 
                 {
                      ClientId = "tripgalleryclientcredentials",
                      ClientName = "Trip Gallery (Client Credentials)",
@@ -24,67 +24,67 @@ namespace TripCompany.IdentityServer.Config
                     ClientSecrets = new List<Secret>()
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
-                    } 
+                    }
+                    
                 }
                 ,
                 new Client 
-                {                   
-                     ClientId = "tripgalleryauthcode",
-                     ClientName = "Trip Gallery (Authorization Code)",
-                     Flow = Flows.AuthorizationCode, 
-                     AllowAccessToAllScopes = true,
+                {
+                    ClientId = "tripgalleryauthcode",
+                    ClientName = "Trip Gallery (Authorization Code)",
+                    Flow = Flows.AuthorizationCode, 
+                    AllowAccessToAllScopes = true,
 
-                    // redirect = URI of the MVC application callback
+                    // redirect = URI of our callback controller in the MVC application
                     RedirectUris = new List<string>
                     { 
                         TripGallery.Constants.TripGalleryMVCSTSCallback 
                     },           
 
-                    // client secret
-                    ClientSecrets = new List<Secret>()
+                     ClientSecrets = new List<Secret>()
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
                     }                    
-                } 
-                ,
+                } ,
                 new Client 
-                { 
-                     ClientId = "tripgalleryimplicit",
-                     ClientName = "Trip Gallery (Implicit)",
-                     Flow = Flows.Implicit, 
-                     AllowAccessToAllScopes = true,
+                {
+                    ClientId = "tripgalleryimplicit",
+                    ClientName = "Trip Gallery (Implicit)",
+                    Flow = Flows.Implicit, 
+                    AllowAccessToAllScopes = true,
 
                     // redirect = URI of the Angular application
                     RedirectUris = new List<string>
                     { 
-                        TripGallery.Constants.TripGalleryAngular + "callback.html"
+                        TripGallery.Constants.TripGalleryAngular + "callback.html" 
                     }            
                 }
                 ,
                 new Client 
                 {
-                     ClientId = "tripgalleryropc",
-                     ClientName = "Trip Gallery (Resource Owner Password Credentials)",
-                     Flow = Flows.ResourceOwner, 
-                     AllowAccessToAllScopes = true,
+                    ClientId = "tripgalleryropc",
+                    ClientName = "Trip Gallery (Resource Owner Password Credentials)",
+                    Flow = Flows.ResourceOwner, 
+                    AllowAccessToAllScopes = true,
 
                     ClientSecrets = new List<Secret>()
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
                     }                    
                 },
-                new Client
+                new Client 
                 {
-                     ClientId = "tripgalleryhybrid",
-                     ClientName = "Trip Gallery (Hybrid)",
-                     Flow = Flows.Hybrid,
-                     AllowAccessToAllScopes = true,
+                    ClientId = "tripgalleryhybrid",
+                    ClientName = "Trip Gallery (Hybrid)",
+                    Flow = Flows.Hybrid, 
+                    AllowAccessToAllScopes = true,
 
-                    RedirectUris = new List<string>()
-                    {
-                        TripGallery.Constants.TripGalleryMVC
-                    }
-                }
+                    // redirect = URI of the MVC application
+                    RedirectUris = new List<string>
+                    { 
+                        TripGallery.Constants.TripGalleryMVC 
+                    } 
+                }  
 
              };
         }

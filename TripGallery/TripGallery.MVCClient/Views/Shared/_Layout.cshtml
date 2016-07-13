@@ -17,20 +17,22 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        @if (User.Identity.IsAuthenticated)
+                
+			@if (User.Identity.IsAuthenticated)
                         {
                             @Html.ActionLink(string.Format("Logout ({0} {1})",
+                            
                             ((User.Identity as System.Security.Claims.ClaimsIdentity).FindFirst("given_name") == null
-                                ? "" : (User.Identity as System.Security.Claims.ClaimsIdentity).FindFirst("given_name").Value),
+                             ? "" : (User.Identity as System.Security.Claims.ClaimsIdentity).FindFirst("given_name").Value),
 
                             ((User.Identity as System.Security.Claims.ClaimsIdentity).FindFirst("family_name") == null
-                                ? "" : (User.Identity as System.Security.Claims.ClaimsIdentity).FindFirst("family_name").Value))
-
+                            ? "" : (User.Identity as System.Security.Claims.ClaimsIdentity).FindFirst("family_name").Value))
+                            
                             , "Logout", "UserAccount")
-
                         }
                    </li>
                 </ul>
+
             </div>
         </div>
     </div>

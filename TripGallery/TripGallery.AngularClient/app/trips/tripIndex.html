@@ -4,7 +4,7 @@
     <!-- Button should result in error when not logged in (we WILL show it, just to ensure we can see
         what happens/goes on)-->
 
-    <div class="btn btn-default leftMarginDefault bottomMarginDefault">
+    <div ng-if="!vm.mgr.expired" class="btn btn-default leftMarginDefault bottomMarginDefault">
         <a href="#/trips/create">Add a Trip</a>
     </div>
  
@@ -42,9 +42,10 @@
                             Make private
                         </a>
                         |
+                    </span><a ng-href="#/trips/{{trip.id}}/pictures">Pictures</a>
+                    <span ng-if="!vm.mgr.expired">
+                        | <a ng-href="#/trips/{{trip.id}}/createalbum">Create album</a>
                     </span>
-                    <a ng-href="#/trips/{{trip.id}}/pictures">Pictures</a>
-                    | <a ng-href="#/trips/{{trip.id}}/createalbum">Create album</a>
                 </div>
             </div> 
                 

@@ -27,7 +27,7 @@ namespace TripGallery.MVCClient
 
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
 
-            AntiForgeryConfig.UniqueClaimTypeIdentifier =
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = 
                 IdentityModel.JwtClaimTypes.Name;
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
@@ -102,6 +102,8 @@ namespace TripGallery.MVCClient
                         n.AuthenticationTicket = new AuthenticationTicket(
                                                  newClaimsIdentity,
                                                  n.AuthenticationTicket.Properties);
+
+                        await Task.FromResult(0);
                     }
                 }
             });

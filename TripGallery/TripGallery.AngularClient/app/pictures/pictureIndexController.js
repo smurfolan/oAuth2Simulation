@@ -4,14 +4,20 @@
         .module("tripGallery")     
         .controller("pictureIndexController",
                      ["pictureResource",
-                         "$routeParams",  
+                         "$routeParams", "OidcManager",
                          PictureIndexController]);
 
-    function PictureIndexController(pictureResource, $routeParams) {
+    function PictureIndexController(pictureResource, $routeParams, OidcManager) {
         var vm = this;
 
         vm.tripId = $routeParams.tripId;
 
+        vm.mgr = OidcManager.OidcTokenManager();
+        vm.getUserIdentifier = function () {
+            // combine issuer + sub
+            return "https://tripcompanysts/identity" + vm.mgr.profile.sub;
+        }
+        
         vm.deletePicture = function (tripId, id) {
             // delete picture - non-get (query, get) methods are
             // mapped onto a resource instance - we need to get

@@ -10,11 +10,21 @@ namespace TripGallery.API.Helpers
 {
     public static class TokenIdentityHelper
     {
-       public static string GetOwnerIdFromToken()
+        public static string GetOwnerIdFromToken()
         {
-            return null;
-        } 
+            var identity = HttpContext.Current.User.Identity as ClaimsIdentity;
 
+            if (identity == null)
+                return null;
+
+            var issuerFromIdentity = identity.FindFirst("iss"); 
+            var subFromIdentity = identity.FindFirst("sub");
+
+            if (issuerFromIdentity == null || subFromIdentity == null)
+                return null;
+
+            // According to the OpenId specification, this is the correct way to identify a user.
+            return issuerFromIdentity.Value + subFromIdentity.Value;
+        }
     }
-
 }

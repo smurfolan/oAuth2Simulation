@@ -3,18 +3,23 @@
     angular
         .module("tripGallery")
         .controller("tripIndexController",
-                     ["tripResource", "$filter", "OidcManager",
+                     ["tripResource", "$filter","OidcManager",
                          TripIndexController]);
 
     function TripIndexController(tripResource, $filter, OidcManager) {
         var vm = this;
 
         vm.mgr = OidcManager.OidcTokenManager();
-
-        vm.getUserIdentifier = function() {
+        debugger;
+        vm.getUserIdentifier = function ()
+        {
             if (!vm.mgr.expired) {
-                // combine issuer + sub. This uniquely identifies a user on OpenID
+                // combine issuer + sub
                 return "https://tripcompanysts/identity" + vm.mgr.profile.sub;
+            }
+            else
+            {
+                return "";
             }
         }
 
@@ -58,8 +63,10 @@
                    // failure
                    null);
         };
+
    
-        vm.loadTrips();       
+        vm.loadTrips();
+        
 
     }
 }());

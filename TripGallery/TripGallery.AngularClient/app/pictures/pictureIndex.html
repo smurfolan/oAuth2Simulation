@@ -14,6 +14,7 @@
                 <img class="tripImage img-rounded" ng-src="{{picture.uri}}" />
                 <div>
                     <a href=""
+                       ng-if="vm.getUserIdentifier() === picture.ownerId"
                        ng-click="vm.deletePicture(picture.tripId, picture.id)">
                         Delete picture
                     </a>                 

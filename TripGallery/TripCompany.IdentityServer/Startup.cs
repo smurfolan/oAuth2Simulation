@@ -22,7 +22,7 @@ namespace TripCompany.IdentityServer
                 {
                     AllowAll = true
                 };
-             
+
                 var idServerServiceFactory = new IdentityServerServiceFactory()
                                 .UseInMemoryClients(Clients.Get())
                                 .UseInMemoryScopes(Scopes.Get())
@@ -38,7 +38,7 @@ namespace TripCompany.IdentityServer
                     SigningCertificate = LoadCertificate(),
                     IssuerUri = TripGallery.Constants.TripGalleryIssuerUri,
                     PublicOrigin = TripGallery.Constants.TripGallerySTSOrigin
-                 
+
                 };
 
                 idsrvApp.UseIdentityServer(options);
