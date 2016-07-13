@@ -19,7 +19,9 @@
                 redirect_uri:  window.location.protocol + "//" + window.location.host + "/callback.html",
                 response_type: "id_token token",
                 scope: "openid profile address gallerymanagement roles",               
-                authority: "https://localhost:44317/identity"
+                authority: "https://localhost:44317/identity",
+                // This one has to match what is defined on identity server level
+                post_logout_redirect_uri: window.location.protocol + "//" + window.location.host + "/index.html"
             };
                     
             var mgr = new OidcTokenManager(config);

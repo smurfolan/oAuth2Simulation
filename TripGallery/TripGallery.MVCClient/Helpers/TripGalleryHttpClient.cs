@@ -21,11 +21,6 @@ namespace TripGallery.MVCClient.Helpers
 
             // Since our API has 'app.UseIdentityServerBearerTokenAuthentication' option activated
             // we must assign bearer token to our web api request
-            //var token = (HttpContext.Current.User.Identity as ClaimsIdentity).FindFirst("access_token");
-            //if (token != null)
-            //{
-            //    client.SetBearerToken(token.Value);
-            //}
 
             client.SetBearerToken(GetAccessToken());
 
@@ -66,7 +61,7 @@ namespace TripGallery.MVCClient.Helpers
                 // replace the claims with the new values - this means creating a new identity
                 var result = from claim in currentClaimsIdentity.Claims
                     where claim.Type != "access_token" && claim.Type != "refresh_token" &&
-                          claim.Type != "expires_at"
+                          claim.Type != "expires_at" && claim.Type != "id_token"
                     select claim;
 
                 var claims = result.ToList();

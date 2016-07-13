@@ -37,7 +37,12 @@ namespace TripCompany.IdentityServer
                     SiteName = "TripCompany Security Token Service",
                     SigningCertificate = LoadCertificate(),
                     IssuerUri = TripGallery.Constants.TripGalleryIssuerUri,
-                    PublicOrigin = TripGallery.Constants.TripGallerySTSOrigin
+                    PublicOrigin = TripGallery.Constants.TripGallerySTSOrigin,
+
+                    AuthenticationOptions = new AuthenticationOptions()
+                    {
+                        EnablePostSignOutAutoRedirect = true
+                    }
 
                 };
 

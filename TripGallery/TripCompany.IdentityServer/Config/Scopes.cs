@@ -29,7 +29,7 @@ namespace TripCompany.IdentityServer.Config
                         Claims = new List<ScopeClaim>()
                         {
                             new ScopeClaim("role", false)
-                        },
+                        }
                     },
                     new Scope
                     { 

@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using IdentityModel.Client;
+using Microsoft.IdentityModel.Protocols;
 
 
 [assembly: OwinStartup(typeof(TripGallery.MVCClient.Startup))]
@@ -46,6 +47,7 @@ namespace TripGallery.MVCClient
                 Scope = "openid profile address gallerymanagement roles offline_access",
                 // identity_token lifetime won't be used, but the expiration options of the Authentication ticket will be used.
                 UseTokenLifetime = false, 
+                PostLogoutRedirectUri = Constants.TripGalleryMVC,
 
                 Notifications = new OpenIdConnectAuthenticationNotifications()
                 {
@@ -114,12 +116,28 @@ namespace TripGallery.MVCClient
                         newClaimsIdentity.AddClaim(new Claim("refresh_token", refreshResponse.RefreshToken));
                         newClaimsIdentity.AddClaim(new Claim("access_token", refreshResponse.AccessToken));
                         newClaimsIdentity.AddClaim(new Claim("expires_at", expirationDateAsRoundtripString));
+                        newClaimsIdentity.AddClaim(new Claim("id_token", refreshResponse.IdentityToken));
 
                         // create a new authentication ticket, overwriting the old one.
                         n.AuthenticationTicket = new AuthenticationTicket(
                                                  newClaimsIdentity,
                                                  n.AuthenticationTicket.Properties);
 
+                        await Task.FromResult(0);
+                    },
+                    // Fires whenever the middleware has to redirect to the identity provider(In our case, STS).
+                    RedirectToIdentityProvider = async n =>
+                    {
+                        // get id token to add as id token hint
+                        if (n.ProtocolMessage.RequestType == OpenIdConnectRequestType.LogoutRequest)
+                        {
+                            var identityTokenHint = n.OwinContext.Authentication.User.FindFirst("id_token");
+
+                            if (identityTokenHint != null)
+                            {
+                                n.ProtocolMessage.IdTokenHint = identityTokenHint.Value;
+                            }
+                        }
                         await Task.FromResult(0);
                     }
                 }

@@ -49,12 +49,19 @@ namespace TripCompany.IdentityServer.Config
 
                     IdentityTokenLifetime = 10,
                     AccessTokenLifetime = 120,
+                    // If we want to have SSO between Angular app and MVC app we need to have this option set to
+                    // false for both the flows they implement(hybrid and implicit).
+                    RequireConsent = false,
 
                     // redirect = URI of the Angular application
                     RedirectUris = new List<string>
                     { 
                         TripGallery.Constants.TripGalleryAngular + "callback.html" 
-                    }            
+                    },
+                    PostLogoutRedirectUris = new List<string>()
+                    {
+                        TripGallery.Constants.TripGalleryAngular  + "index.html"
+                    }
                 }
                 ,
                 new Client 
@@ -75,11 +82,12 @@ namespace TripCompany.IdentityServer.Config
                     ClientName = "Trip Gallery (Hybrid)",
                     Flow = Flows.Hybrid, 
                     AllowAccessToAllScopes = true,
+                    // If we want to have SSO between Angular app and MVC app we need to have this option set to
+                    // false for both the flows they implement(hybrid and implicit).
+                    RequireConsent = false,
 
                     IdentityTokenLifetime = 10,
                     AccessTokenLifetime = 120,
-
-
 
                     // redirect = URI of the MVC application
                     RedirectUris = new List<string>
@@ -91,7 +99,11 @@ namespace TripCompany.IdentityServer.Config
                     ClientSecrets = new List<Secret>()
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
-                    }                   
+                    },
+                    PostLogoutRedirectUris = new List<string>()
+                    {
+                        TripGallery.Constants.TripGalleryMVC
+                    }
                 }  
 
              };
