@@ -56,7 +56,9 @@ namespace TripCompany.IdentityServer.Config
                     // redirect = URI of the Angular application
                     RedirectUris = new List<string>
                     { 
-                        TripGallery.Constants.TripGalleryAngular + "callback.html" 
+                        TripGallery.Constants.TripGalleryAngular + "callback.html",
+                        // for silent refresh
+                        TripGallery.Constants.TripGalleryAngular + "silentrefreshframe.html"
                     },
                     PostLogoutRedirectUris = new List<string>()
                     {

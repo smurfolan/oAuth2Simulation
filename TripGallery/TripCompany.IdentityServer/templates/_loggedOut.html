@@ -9,6 +9,9 @@
     </div>
     <iframe class="signout" ng-repeat="url in model.iFrameUrls" ng-src="{{url}}"></iframe>
 
+    <!-- This portion of code is used for the Single-Sign-Out option
+        If we are about to add a new client and we want him to be part of the 
+        SSOut functionality, we have to add his logout endpoint here -->
     <!--MVC-->
     <iframe hidden src="https://localhost:44318/UserAccount/LocalLogout"></iframe>
     <!--Angular-->
