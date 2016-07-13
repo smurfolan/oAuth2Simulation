@@ -38,6 +38,11 @@
             return {
                 'request': function (config) {
 
+                    // if the access token has expired, we need to redirect to the login page
+                    if (OidcManager.OidcTokenManager().expired) {
+                        OidcManager.OidcTokenManager().redirectForToken();
+                    }
+
                     // if it's a request to the API, we need to provide the
                     // access token as bearer token.             
                     if (config.url.indexOf(appSettings.tripGalleryAPI) === 0) {

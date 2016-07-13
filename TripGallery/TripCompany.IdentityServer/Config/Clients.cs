@@ -1,10 +1,5 @@
 ﻿using IdentityServer3.Core.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TripGallery;
 
 namespace TripCompany.IdentityServer.Config
 {
@@ -24,8 +19,7 @@ namespace TripCompany.IdentityServer.Config
                     ClientSecrets = new List<Secret>()
                     {
                         new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
-                    }
-                    
+                    }                  
                 }
                 ,
                 new Client 
@@ -53,6 +47,9 @@ namespace TripCompany.IdentityServer.Config
                     Flow = Flows.Implicit, 
                     AllowAccessToAllScopes = true,
 
+                    IdentityTokenLifetime = 10,
+                    AccessTokenLifetime = 120,
+
                     // redirect = URI of the Angular application
                     RedirectUris = new List<string>
                     { 
@@ -79,11 +76,22 @@ namespace TripCompany.IdentityServer.Config
                     Flow = Flows.Hybrid, 
                     AllowAccessToAllScopes = true,
 
+                    IdentityTokenLifetime = 10,
+                    AccessTokenLifetime = 120,
+
+
+
                     // redirect = URI of the MVC application
                     RedirectUris = new List<string>
                     { 
                         TripGallery.Constants.TripGalleryMVC 
-                    } 
+                    },
+                    
+                    // Needed when requesting refresh tokens
+                    ClientSecrets = new List<Secret>()
+                    {
+                        new Secret(TripGallery.Constants.TripGalleryClientSecret.Sha256())
+                    }                   
                 }  
 
              };

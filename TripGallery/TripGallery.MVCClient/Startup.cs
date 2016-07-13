@@ -1,19 +1,15 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
-using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Helpers;
 using IdentityModel.Client;
-using TripGallery.MVCClient.Helpers;
 
 
 [assembly: OwinStartup(typeof(TripGallery.MVCClient.Startup))]
@@ -32,7 +28,11 @@ namespace TripGallery.MVCClient
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationType = "Cookies"
+                AuthenticationType = "Cookies",
+                // How much the cookie will remain valid from the point it is created.
+                ExpireTimeSpan = new TimeSpan(0, 30, 0),
+                // Tells the middleware to issue a new cookie with a new expiration time after half of the expiration window has passed.
+                SlidingExpiration = true
             });
 
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
@@ -43,7 +43,9 @@ namespace TripGallery.MVCClient
                 RedirectUri = Constants.TripGalleryMVC,
                 SignInAsAuthenticationType = "Cookies",
                 ResponseType = "code id_token token",
-                Scope = "openid profile address gallerymanagement roles",
+                Scope = "openid profile address gallerymanagement roles offline_access",
+                // identity_token lifetime won't be used, but the expiration options of the Authentication ticket will be used.
+                UseTokenLifetime = false, 
 
                 Notifications = new OpenIdConnectAuthenticationNotifications()
                 {
@@ -94,9 +96,24 @@ namespace TripGallery.MVCClient
                             newClaimsIdentity.AddClaim(roleClaim);
                         }
 
-                        // add the access token so we can access it later on 
-                        newClaimsIdentity.AddClaim(
-                            new Claim("access_token", n.ProtocolMessage.AccessToken));
+                        // request a refresh token
+                        var tokenClientForRefreshToekn = new TokenClient(
+                            Constants.TripGallerySTSTokenEndpoint,
+                            "tripgalleryhybrid",
+                            Constants.TripGalleryClientSecret);
+
+                        var refreshResponse = await tokenClientForRefreshToekn
+                            .RequestAuthorizationCodeAsync(
+                                n.ProtocolMessage.Code,
+                                Constants.TripGalleryMVC);
+
+                        var expirationDateAsRoundtripString = DateTime
+                            .SpecifyKind(DateTime.UtcNow.AddSeconds(refreshResponse.ExpiresIn)
+                                , DateTimeKind.Utc).ToString("o");
+
+                        newClaimsIdentity.AddClaim(new Claim("refresh_token", refreshResponse.RefreshToken));
+                        newClaimsIdentity.AddClaim(new Claim("access_token", refreshResponse.AccessToken));
+                        newClaimsIdentity.AddClaim(new Claim("expires_at", expirationDateAsRoundtripString));
 
                         // create a new authentication ticket, overwriting the old one.
                         n.AuthenticationTicket = new AuthenticationTicket(

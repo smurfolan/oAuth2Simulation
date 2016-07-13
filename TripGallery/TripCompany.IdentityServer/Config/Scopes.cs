@@ -15,7 +15,9 @@ namespace TripCompany.IdentityServer.Config
                 { 
                     StandardScopes.OpenId,
                     StandardScopes.ProfileAlwaysInclude,
-                    StandardScopes.Address,                     
+                    StandardScopes.Address, 
+                    // Needed when we are working with refresh tokens
+                    StandardScopes.OfflineAccess,                    
                     new Scope
                     { 
                         Name = "gallerymanagement",
