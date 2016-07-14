@@ -8,7 +8,9 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityServer3.Core.Services;
 using TripCompany.IdentityServer.Config;
+using TripCompany.IdentityServer.Services;
 
 namespace TripCompany.IdentityServer
 {
@@ -25,8 +27,7 @@ namespace TripCompany.IdentityServer
 
                 var idServerServiceFactory = new IdentityServerServiceFactory()
                                 .UseInMemoryClients(Clients.Get())
-                                .UseInMemoryScopes(Scopes.Get())
-                                .UseInMemoryUsers(Users.Get());
+                                .UseInMemoryScopes(Scopes.Get());
 
                 var defaultViewServiceOptions = new DefaultViewServiceOptions
                 {
@@ -37,6 +38,10 @@ namespace TripCompany.IdentityServer
 
                 idServerServiceFactory.CorsPolicyService = new
                     Registration<IdentityServer3.Core.Services.ICorsPolicyService>(corsPolicyService);
+
+                // use custom user service
+                var customUserService = new CustomUserService();
+                idServerServiceFactory.UserService = new Registration<IUserService>(resolver => customUserService);
 
                 var options = new IdentityServerOptions
                 {
@@ -49,7 +54,17 @@ namespace TripCompany.IdentityServer
                     AuthenticationOptions = new AuthenticationOptions()
                     {
                         EnablePostSignOutAutoRedirect = true,
-                        PostSignOutAutoRedirectDelay = 2
+                        PostSignOutAutoRedirectDelay = 2,
+                        // Provide link to other web page in order to be able to login (Registration, Reset password etc.)
+                        LoginPageLinks = new List<LoginPageLink>()
+                        {
+                            new LoginPageLink()
+                            {
+                                Type = "createaccount"/*Should be unique*/,
+                                Text = "Crate a new account",
+                                Href = "~/createuseraccount"
+                            }
+                        }
                     },
                     CspOptions = new CspOptions()
                     {
