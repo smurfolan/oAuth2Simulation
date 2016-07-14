@@ -1,2 +1,12 @@
 Standalone Indentity Server implementation - https://www.scottbrady91.com/Identity-Server/Identity-Server-3-Standalone-Implementation-Part-1
 Enable SSL for testing - http://www.asp.net/web-api/overview/security/working-with-ssl-in-web-api
+
+============================================================
+Querying LinkedIn public API:
+Test environment: https://apigee.com/console/linkedin
+
+Example for query that fetches basic profile data -> 
+https://api.linkedin.com/v1/people/~:(id,first-name,last-name,certifications,positions,email-address,skills,educations:(id,school-name,field-of-study,start-date,end-date,degree,activities,notes))?format=json
+
+Reference to all the possible queries that could be made: https://developer.linkedin.com/docs/fields
+============================================================
