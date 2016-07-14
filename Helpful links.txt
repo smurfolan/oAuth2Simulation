@@ -10,3 +10,6 @@ https://api.linkedin.com/v1/people/~:(id,first-name,last-name,certifications,pos
 
 Reference to all the possible queries that could be made: https://developer.linkedin.com/docs/fields
 ============================================================
+How we can add Google Sign-In option:
+https://identityserver.github.io/Documentation/docs/overview/mvcGettingStarted.html
+============================================================

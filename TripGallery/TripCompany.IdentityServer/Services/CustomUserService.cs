@@ -86,5 +86,115 @@ namespace TripCompany.IdentityServer.Services
                 return Task.FromResult(0);
             }
         }
+
+        // gets called whenever the user uses external identity provider to authenticate
+        // now we will try to map external user to a local user
+        public override Task AuthenticateExternalAsync(ExternalAuthenticationContext context)
+        {
+            using (var userRepository = new UserRepository())
+            {
+                // is the external provider already linked to an account?
+                var existingLinkedUser = userRepository.GetUserForExternalProvider(context.ExternalIdentity.Provider,
+                 context.ExternalIdentity.ProviderId);
+
+                // it is - set as authentication result;
+                if (existingLinkedUser != null)
+                {
+                    context.AuthenticateResult = new AuthenticateResult(
+                        existingLinkedUser.Subject,
+                        existingLinkedUser.UserClaims.First(c => c.ClaimType == Constants.ClaimTypes.GivenName).ClaimValue,
+                        existingLinkedUser.UserClaims.Select<UserClaim, Claim>(uc => new Claim(uc.ClaimType, uc.ClaimValue)),
+                        authenticationMethod: Constants.AuthenticationMethods.External,
+                        identityProvider: context.ExternalIdentity.Provider);
+
+                    return Task.FromResult(0);
+                }
+
+                // no existing link, get email claim to match user
+                var emailClaim = context.ExternalIdentity.Claims.FirstOrDefault(c => c.Type == "email");
+                if (emailClaim == null)
+                {
+                    // return error - we need an email claim to match
+                    context.AuthenticateResult = new AuthenticateResult("No email claim available.");
+                    return Task.FromResult(0);
+                }
+
+                // find a user with a matching e-mail claim.  
+                var userWithMatchingEmailClaim = userRepository.GetUserByEmail(emailClaim.Value);
+
+                if (userWithMatchingEmailClaim == null)
+                {
+                    // create a new account
+                    var newUser = new User();
+                    newUser.Subject = Guid.NewGuid().ToString();
+                    newUser.IsActive = true;
+
+                    // add the external identity provider as login provider
+                    newUser.UserLogins.Add(new UserLogin()
+                    {
+                        Subject = newUser.Subject,
+                        LoginProvider = context.ExternalIdentity.Provider,
+                        ProviderKey = context.ExternalIdentity.ProviderId
+                    });
+
+                    // create a list of claims from the information we got from the external provider
+                    // this can be provider-specific
+                    if (context.ExternalIdentity.Provider.ToLowerInvariant() == "google")
+                    {
+                        //TODO: Claims are duplicated here in context.ExternalIdentity.Claims
+                        newUser.UserClaims = context.ExternalIdentity
+                            .Claims.Where(c =>
+                               c.Type.ToLowerInvariant() == Constants.ClaimTypes.GivenName
+                            || c.Type.ToLowerInvariant() == Constants.ClaimTypes.FamilyName
+                            || c.Type.ToLowerInvariant() == Constants.ClaimTypes.Email)
+                            .Select<Claim, UserClaim>(c => new UserClaim()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Subject = newUser.Subject,
+                                ClaimType = c.Type.ToLowerInvariant(),
+                                ClaimValue = c.Value
+                            }).ToList();
+                    }
+
+                    // create a new user with the FreeUser role by default
+                    newUser.UserClaims.Add(new UserClaim()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Subject = newUser.Subject,
+                        ClaimType = "role",
+                        ClaimValue = "FreeUser"
+                    });
+
+                    // add the user
+                    userRepository.AddUser(newUser);
+
+                    // use this new user
+                    context.AuthenticateResult = new AuthenticateResult(
+                       newUser.Subject,
+                       newUser.UserClaims.First(c => c.ClaimType == Constants.ClaimTypes.GivenName).ClaimValue,
+                       newUser.UserClaims.Select<UserClaim, Claim>(uc => new Claim(uc.ClaimType, uc.ClaimValue)),
+                       authenticationMethod: Constants.AuthenticationMethods.External,
+                       identityProvider: context.ExternalIdentity.Provider);
+
+                    return Task.FromResult(0);
+                }
+
+                // register this external provider for this user account
+                userRepository.AddUserLogin(userWithMatchingEmailClaim.Subject,
+                    context.ExternalIdentity.Provider,
+                    context.ExternalIdentity.ProviderId);
+
+                // use this existing account
+                context.AuthenticateResult = new AuthenticateResult(
+                       userWithMatchingEmailClaim.Subject,
+                       userWithMatchingEmailClaim.UserClaims.First(c => c.ClaimType == Constants.ClaimTypes.GivenName).ClaimValue,
+                       userWithMatchingEmailClaim.UserClaims.Select<UserClaim, Claim>(uc => new Claim(uc.ClaimType, uc.ClaimValue)),
+                       authenticationMethod: Constants.AuthenticationMethods.External,
+                       identityProvider: context.ExternalIdentity.Provider);
+            }
+            
+
+            return Task.FromResult(0);
+        }
     }
 }
