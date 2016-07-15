@@ -153,6 +153,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\CreateUserAccount\Index.cshtml" />
+    <Content Include="Views\CompleteAdditionalInformation\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -170,6 +171,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Config\Clients.cs" />
     <Compile Include="Config\Scopes.cs" />
+    <Compile Include="Controllers\CompleteAdditionalInformationController.cs" />
     <Compile Include="Controllers\CreateUserAccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

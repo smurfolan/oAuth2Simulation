@@ -122,6 +122,14 @@ namespace TripCompany.IdentityServer.Services
                 // find a user with a matching e-mail claim.  
                 var userWithMatchingEmailClaim = userRepository.GetUserByEmail(emailClaim.Value);
 
+                if (userWithMatchingEmailClaim == null & context.ExternalIdentity.Provider.ToLower() == "google")
+                {
+                    // no existing link. If it's a google user, we are going to ask for additional information.
+                    context.AuthenticateResult = 
+                        new AuthenticateResult("~/completeadditionalinformation", context.ExternalIdentity);
+                    return Task.FromResult(0);
+                }
+
                 if (userWithMatchingEmailClaim == null)
                 {
                     // create a new account
