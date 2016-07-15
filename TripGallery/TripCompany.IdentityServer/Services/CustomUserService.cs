@@ -4,14 +4,11 @@ using IdentityServer3.Core.Services.Default;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TripCompany.Repository;
 using TripCompany.Repository.Entities;
 using IdentityServer3.Core.Extensions;
 using System.Security.Claims;
-using Microsoft.Owin;
-using IdentityServer3.Core.Services;
 
 namespace TripCompany.IdentityServer.Services
 {
@@ -122,11 +119,14 @@ namespace TripCompany.IdentityServer.Services
                 // find a user with a matching e-mail claim.  
                 var userWithMatchingEmailClaim = userRepository.GetUserByEmail(emailClaim.Value);
 
-                if (userWithMatchingEmailClaim == null & context.ExternalIdentity.Provider.ToLower() == "google")
+                if (userWithMatchingEmailClaim == null && 
+                    context.ExternalIdentity.Provider.ToLower() == "google" || context.ExternalIdentity.Provider.ToLower() == "linkedin")
                 {
                     // no existing link. If it's a google user, we are going to ask for additional information.
                     context.AuthenticateResult = 
-                        new AuthenticateResult("~/completeadditionalinformation", context.ExternalIdentity);
+                        new AuthenticateResult(
+                            "~/completeadditionalinformation?provider=" + context.ExternalIdentity.Provider, 
+                            context.ExternalIdentity);
                     return Task.FromResult(0);
                 }
 

@@ -14,7 +14,7 @@ namespace TripCompany.IdentityServer.Controllers
     public class CompleteAdditionalInformationController : Controller
     {
         // GET: CompleteAdditionalInformation
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string provider)
         {
             // we're only allowed here when we have a partial sign-in
             var ctx = Request.GetOwinContext();
@@ -24,7 +24,7 @@ namespace TripCompany.IdentityServer.Controllers
                 return View("No partially signed-in user found.");
             }
 
-            return View(new CompleteAdditionalInformationModel());
+            return View(new CompleteAdditionalInformationModel() {ExternalProvider = provider});
         }
 
         [HttpPost]
@@ -52,10 +52,11 @@ namespace TripCompany.IdentityServer.Controllers
 
                     // add the external identity provider as login provider
                     // => external_provider_user_id contains the id/key
+                    // TODO: Need to be able to dynamically determine what is the LoginProvider
                     newUser.UserLogins.Add(new UserLogin()
                     {
                         Subject = newUser.Subject,
-                        LoginProvider = "google",
+                        LoginProvider = model.ExternalProvider.ToLower(),
                         ProviderKey = partialSignInUser.Claims.First(c => c.Type == "external_provider_user_id").Value
                     });
 
@@ -83,6 +84,15 @@ namespace TripCompany.IdentityServer.Controllers
                         Subject = newUser.Subject,
                         ClaimType = IdentityServer3.Core.Constants.ClaimTypes.FamilyName,
                         ClaimValue = partialSignInUser.Claims.First(c => c.Type == "family_name").Value
+                    });
+
+                    // we could use the access token to obtain user info from linkedin
+                    newUser.UserClaims.Add(new UserClaim()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Subject = newUser.Subject,
+                        ClaimType = IdentityServer3.Core.Constants.ClaimTypes.AccessTokenHash,
+                        ClaimValue = partialSignInUser.Claims.First(c => c.Type == "urn:linkedin:accesstoken").Value
                     });
 
                     newUser.UserClaims.Add(new UserClaim()
