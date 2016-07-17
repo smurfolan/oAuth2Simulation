@@ -122,7 +122,7 @@ namespace BoongalooCompany.IdentityServer.Services
                 if (userWithMatchingEmailClaim == null && 
                     context.ExternalIdentity.Provider.ToLower() == "google" || context.ExternalIdentity.Provider.ToLower() == "linkedin")
                 {
-                    // no existing link. If it's a google user, we are going to ask for additional information.
+                    // no existing link. If it's a google/linkedin user, we are going to ask for additional information.
                     context.AuthenticateResult = 
                         new AuthenticateResult(
                             "~/completeadditionalinformation?provider=" + context.ExternalIdentity.Provider, 

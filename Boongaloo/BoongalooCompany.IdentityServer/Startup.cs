@@ -1,17 +1,12 @@
 ﻿using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Services.Default;
-using IdentityServer3.Core.Services.InMemory;
 using Owin;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using IdentityServer3.Core.Services;
-using Microsoft.Owin.Security.Google;
-using Owin.Security.Providers.LinkedIn;
 using BoongalooCompany.IdentityServer.Config;
+using BoongalooCompany.IdentityServer.Helpers;
 using BoongalooCompany.IdentityServer.Services;
 
 namespace BoongalooCompany.IdentityServer
@@ -93,60 +88,9 @@ namespace BoongalooCompany.IdentityServer
 
         private void ConfigureIdentityProviders(IAppBuilder app, string signInAsType)
         {
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
-            {
-                AuthenticationType = "Google",
-                Caption = "Sign-in with Google",
-                SignInAsAuthenticationType = signInAsType,
-
-                ClientId = "97756425623-pf0l0olj4d0bjiuaslg5cmd330g4bit9.apps.googleusercontent.com",
-                ClientSecret = "y68P2OYWJtsb3yWl9rR_DsyS",
-                Provider = new GoogleOAuth2AuthenticationProvider()
-                {
-                    OnAuthenticated = (context) =>
-                    {
-                        // TODO: Instead of using context.* for assignments, we could try to make a call to google's user info endpoint passing the access token we have
-                        context.Identity.AddClaim(new System.Security.Claims.Claim(
-                                    IdentityServer3.Core.Constants.ClaimTypes.GivenName, context.GivenName));
-
-                        context.Identity.AddClaim(new System.Security.Claims.Claim(
-                            IdentityServer3.Core.Constants.ClaimTypes.FamilyName, context.FamilyName));      
-                        // since there's no roles in Google, we explicitly set it to 'FreeUser'                  
-                        context.Identity.AddClaim(new System.Security.Claims.Claim(
-                         IdentityServer3.Core.Constants.ClaimTypes.Role, "FreeUser"));
-
-                        return Task.FromResult(0);
-                    }
-                }
-            });
-
-            app.UseLinkedInAuthentication(new LinkedInAuthenticationOptions()
-            {
-                AuthenticationType = "LinkedIn",
-                Caption = "Sign-in with LinkedIn",
-                SignInAsAuthenticationType = signInAsType,
-
-                ClientId = "777k6ke7zh5851",
-                ClientSecret = "3VuCX21r1AkXnGmd",
-                Provider = new LinkedInAuthenticationProvider()
-                {
-                    OnAuthenticated = (context) =>
-                    {
-                        context.Identity.AddClaim(new System.Security.Claims.Claim(
-                                    IdentityServer3.Core.Constants.ClaimTypes.GivenName, context.GivenName));
-
-                        context.Identity.AddClaim(new System.Security.Claims.Claim(
-                            IdentityServer3.Core.Constants.ClaimTypes.FamilyName, context.FamilyName));
-
-                        // since there's no roles in LinkedIn, we explicitly set it to 'FreeUser'                  
-                        context.Identity.AddClaim(new System.Security.Claims.Claim(
-                         IdentityServer3.Core.Constants.ClaimTypes.Role, "FreeUser"));
-                        
-                        return Task.FromResult(0);
-                    }
-                }
-
-            });
+            ExternalAuthHelper.ConfigureExternalAuthProviders(app, signInAsType);
         }
+
+        
     }
 }
