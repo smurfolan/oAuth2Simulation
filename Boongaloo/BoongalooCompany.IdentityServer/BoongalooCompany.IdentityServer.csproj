@@ -183,6 +183,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ExternalAuthHelper.cs" />
+    <Compile Include="Models\BaseUserInfo.cs" />
     <Compile Include="Models\CompleteAdditionalInformationModel.cs" />
     <Compile Include="Models\CreateUserAccountModel.cs" />
     <Compile Include="Models\TwoFactorAuthenticationModel.cs" />

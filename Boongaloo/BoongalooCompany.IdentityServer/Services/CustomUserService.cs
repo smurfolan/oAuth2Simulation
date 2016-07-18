@@ -149,7 +149,6 @@ namespace BoongalooCompany.IdentityServer.Services
                     // this can be provider-specific
                     if (context.ExternalIdentity.Provider.ToLowerInvariant() == "google")
                     {
-                        //TODO: Claims are duplicated here in context.ExternalIdentity.Claims
                         newUser.UserClaims = context.ExternalIdentity
                             .Claims.Where(c =>
                                c.Type.ToLowerInvariant() == Constants.ClaimTypes.GivenName
