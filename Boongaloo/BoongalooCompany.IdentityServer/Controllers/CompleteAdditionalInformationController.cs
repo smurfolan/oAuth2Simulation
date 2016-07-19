@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -42,9 +42,6 @@ namespace BoongalooCompany.IdentityServer.Controllers
             {
                 using (var userRepository = new UserRepository())
                 {
-                    // create a user in our user store, including claims & google as
-                    // an external login.
-
                     // create a new account
                     var newUser = new User();
                     newUser.Subject = Guid.NewGuid().ToString();
@@ -52,7 +49,6 @@ namespace BoongalooCompany.IdentityServer.Controllers
 
                     // add the external identity provider as login provider
                     // => external_provider_user_id contains the id/key
-                    // TODO: Need to be able to dynamically determine what is the LoginProvider
                     newUser.UserLogins.Add(new UserLogin()
                     {
                         Subject = newUser.Subject,
@@ -60,53 +56,8 @@ namespace BoongalooCompany.IdentityServer.Controllers
                         ProviderKey = partialSignInUser.Claims.First(c => c.Type == "external_provider_user_id").Value
                     });
 
-                    // create e-mail claim
-                    newUser.UserClaims.Add(new UserClaim()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Subject = newUser.Subject,
-                        ClaimType = IdentityServer3.Core.Constants.ClaimTypes.Email,
-                        ClaimValue = partialSignInUser.Claims.First(
-                          c => c.Type == IdentityServer3.Core.Constants.ClaimTypes.Email).Value
-                    });
+                    AddUserClaimsForExternalUser(model, newUser, partialSignInUser);
 
-                    // create claims from the model
-                    newUser.UserClaims.Add(new UserClaim()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Subject = newUser.Subject,
-                        ClaimType = IdentityServer3.Core.Constants.ClaimTypes.GivenName,
-                        ClaimValue = partialSignInUser.Claims.First(c => c.Type == "given_name").Value
-                    });
-                    newUser.UserClaims.Add(new UserClaim()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Subject = newUser.Subject,
-                        ClaimType = IdentityServer3.Core.Constants.ClaimTypes.FamilyName,
-                        ClaimValue = partialSignInUser.Claims.First(c => c.Type == "family_name").Value
-                    });
-
-                    // we could use the access token to obtain user info from linkedin
-                    if (model.ExternalProvider.ToLower() == "linkedin")
-                    {
-                        newUser.UserClaims.Add(new UserClaim()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Subject = newUser.Subject,
-                            ClaimType = IdentityServer3.Core.Constants.ClaimTypes.AccessTokenHash,
-                            ClaimValue = partialSignInUser.Claims.First(c => c.Type == "urn:linkedin:accesstoken").Value
-                        });
-                    }                
-
-                    newUser.UserClaims.Add(new UserClaim()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Subject = newUser.Subject,
-                        ClaimType = "role",
-                        ClaimValue = model.Role
-                    });
-
-                    // add the user             
                     userRepository.AddUser(newUser);
 
                     // continue where we left off                
@@ -115,6 +66,94 @@ namespace BoongalooCompany.IdentityServer.Controllers
             }
 
             return View();
+        }
+
+        /// <summary>
+        /// Collects all the user provided information into list of claims related to the user in our store
+        /// </summary>
+        /// <param name="newUser">The user that logged in from an external account</param>
+        /// <param name="model">User provided information</param>
+        /// <param name="partialSignInUser">The user who is currently partially logged in.</param>
+        private static void AddUserClaimsForExternalUser(
+            CompleteAdditionalInformationModel model, 
+            User newUser,
+            ClaimsIdentity partialSignInUser)
+        {
+            // EMAIL
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = IdentityServer3.Core.Constants.ClaimTypes.Email,
+                ClaimValue = partialSignInUser.Claims.First(
+                    c => c.Type == IdentityServer3.Core.Constants.ClaimTypes.Email).Value
+            });
+
+            // GIVEN NAME
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = IdentityServer3.Core.Constants.ClaimTypes.GivenName,
+                ClaimValue = partialSignInUser.Claims.First(c => c.Type == "given_name").Value
+            });
+
+            // FAMILY NAME
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = IdentityServer3.Core.Constants.ClaimTypes.FamilyName,
+                ClaimValue = partialSignInUser.Claims.First(c => c.Type == "family_name").Value
+            });
+
+            // we could use the access token to obtain user info from linkedin
+            //if (model.ExternalProvider.ToLower() == "linkedin")
+            //{
+            //    newUser.UserClaims.Add(new UserClaim()
+            //    {
+            //        Id = Guid.NewGuid().ToString(),
+            //        Subject = newUser.Subject,
+            //        ClaimType = IdentityServer3.Core.Constants.ClaimTypes.AccessTokenHash,
+            //        ClaimValue = partialSignInUser.Claims.First(c => c.Type == "urn:linkedin:accesstoken").Value
+            //    });
+            //}                
+
+            // ROLE
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = IdentityServer3.Core.Constants.ClaimTypes.Role,
+                ClaimValue = model.Role
+            });
+
+            // SKYPE NAME
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = "skypename",
+                ClaimValue = model.SkypeName
+            });
+
+            // PHONE NUMBER
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = IdentityServer3.Core.Constants.ClaimTypes.PhoneNumber,
+                ClaimValue = model.PhoneNumber
+            });
+
+            // EXTERNAL PROVIDER
+            newUser.UserClaims.Add(new UserClaim()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Subject = newUser.Subject,
+                ClaimType = "externalprovider",
+                ClaimValue = model.ExternalProvider
+            });
         }
     }
 }

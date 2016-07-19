@@ -18,7 +18,7 @@ namespace Boongaloo.MVCClient.Controllers
 
         public async Task<ActionResult> Index(Guid tripId)
         {
-            var httpClient = TripGalleryHttpClient.GetClient();
+            var httpClient = BoongalooHttpClient.GetClient();
 
             var rspPictures = await httpClient.GetAsync("api/trips/" + tripId.ToString() + "/pictures").ConfigureAwait(false);
 
@@ -59,7 +59,7 @@ namespace Boongaloo.MVCClient.Controllers
 
                 vm.Picture.PictureBytes = uploadedImage;
 
-                var httpClient = TripGalleryHttpClient.GetClient();
+                var httpClient = BoongalooHttpClient.GetClient();
 
                 var serializedTrip = JsonConvert.SerializeObject(vm.Picture);
 
@@ -87,7 +87,7 @@ namespace Boongaloo.MVCClient.Controllers
 
         public async Task<ActionResult> Delete(Guid tripId, Guid pictureId)
         {
-            var httpClient = TripGalleryHttpClient.GetClient();
+            var httpClient = BoongalooHttpClient.GetClient();
 
             var response = await httpClient.DeleteAsync("api/trips/" + tripId.ToString() + "/pictures/" + pictureId.ToString())
                 .ConfigureAwait(false);

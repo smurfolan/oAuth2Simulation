@@ -14,6 +14,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using Boongaloo;
+using Microsoft.Owin.Security.Notifications;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace Boongaloo.MVCClient
@@ -46,7 +47,7 @@ namespace Boongaloo.MVCClient
                 RedirectUri = Constants.BoongalooMVC,
                 SignInAsAuthenticationType = "Cookies",
                 ResponseType = "code id_token token",
-                Scope = "openid profile address gallerymanagement roles offline_access",
+                Scope = "openid profile address boongaloomanagement offline_access",
                 // identity_token lifetime won't be used, but the expiration options of the Authentication ticket will be used.
                 UseTokenLifetime = false, 
                 PostLogoutRedirectUri = Constants.BoongalooMVC,
@@ -58,72 +59,10 @@ namespace Boongaloo.MVCClient
                         TokenHelper.DecodeAndWrite(n.ProtocolMessage.IdToken);
                         TokenHelper.DecodeAndWrite(n.ProtocolMessage.AccessToken);
 
+                        // TODO: Claims transformations and store user in DB if not available
+
                         // CLAIMS TRANSFORMATION
-                        var givenNameClaim = n.AuthenticationTicket
-                            .Identity.FindFirst(IdentityModel.JwtClaimTypes.GivenName);
-
-                        var familyNameClaim = n.AuthenticationTicket
-                            .Identity.FindFirst(IdentityModel.JwtClaimTypes.FamilyName);
-
-                        var subClaim = n.AuthenticationTicket
-                            .Identity.FindFirst(IdentityModel.JwtClaimTypes.Subject);
-
-                        var roleClaim = n.AuthenticationTicket
-                            .Identity.FindFirst(IdentityModel.JwtClaimTypes.Role);
-
-                        // create a new claims, issuer + sub as unique identifier
-                        var nameClaim = new Claim(IdentityModel.JwtClaimTypes.Name,
-                                    Constants.BoongalooIssuerUri + subClaim.Value);
-
-                        var newClaimsIdentity = new ClaimsIdentity(
-                           n.AuthenticationTicket.Identity.AuthenticationType,
-                           IdentityModel.JwtClaimTypes.Name,
-                           IdentityModel.JwtClaimTypes.Role);
-
-                        if (nameClaim != null)
-                        {
-                            newClaimsIdentity.AddClaim(nameClaim);
-                        }
-
-                        if (givenNameClaim != null)
-                        {
-                            newClaimsIdentity.AddClaim(givenNameClaim);
-                        }
-
-                        if (familyNameClaim != null)
-                        {
-                            newClaimsIdentity.AddClaim(familyNameClaim);
-                        }
-
-                        if (roleClaim != null)
-                        {
-                            newClaimsIdentity.AddClaim(roleClaim);
-                        }
-
-                        // request a refresh token
-                        var tokenClientForRefreshToekn = new TokenClient(
-                            Constants.BoongalooSTSTokenEndpoint,
-                            "boongaloohybrid",
-                            Constants.BoongalooClientSecret);
-
-                        var refreshResponse = await tokenClientForRefreshToekn
-                            .RequestAuthorizationCodeAsync(
-                                n.ProtocolMessage.Code,
-                                Constants.BoongalooMVC);
-
-                        var expirationDateAsRoundtripString = DateTime
-                            .SpecifyKind(DateTime.UtcNow.AddSeconds(refreshResponse.ExpiresIn)
-                                , DateTimeKind.Utc).ToString("o");
-
-                        newClaimsIdentity.AddClaim(new Claim("refresh_token", refreshResponse.RefreshToken));
-                        newClaimsIdentity.AddClaim(new Claim("access_token", refreshResponse.AccessToken));
-                        newClaimsIdentity.AddClaim(new Claim("expires_at", expirationDateAsRoundtripString));
-                        newClaimsIdentity.AddClaim(new Claim("id_token", refreshResponse.IdentityToken));
-
-                        // create a new authentication ticket, overwriting the old one.
-                        n.AuthenticationTicket = new AuthenticationTicket(
-                                                 newClaimsIdentity,
-                                                 n.AuthenticationTicket.Properties);
+                        await ClaimsTransformations.AssignClaimsReceivedFromIdentityServer(n, n.ProtocolMessage.AccessToken);
 
                         await Task.FromResult(0);
                     },
@@ -145,6 +84,6 @@ namespace Boongaloo.MVCClient
                 }
             });
 
-        }
+        }      
     }
 }

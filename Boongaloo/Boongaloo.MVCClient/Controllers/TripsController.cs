@@ -32,7 +32,7 @@ namespace Boongaloo.MVCClient.Controllers
 	            }               
             } 
 
-            var httpClient = TripGalleryHttpClient.GetClient();
+            var httpClient = BoongalooHttpClient.GetClient();
 
             var rspTrips = await httpClient.GetAsync("api/trips").ConfigureAwait(false);
 
@@ -107,7 +107,7 @@ namespace Boongaloo.MVCClient.Controllers
 
                 vm.Trip.MainPictureBytes = uploadedImage;
 
-                var httpClient = TripGalleryHttpClient.GetClient();
+                var httpClient = BoongalooHttpClient.GetClient();
 
                 var serializedTrip = JsonConvert.SerializeObject(vm.Trip);
 
@@ -140,7 +140,7 @@ namespace Boongaloo.MVCClient.Controllers
             JsonPatchDocument<Trip> tripPatchDoc = new JsonPatchDocument<Trip>();
             tripPatchDoc.Replace(t => t.IsPublic, !isPublic);
 
-            var httpClient = TripGalleryHttpClient.GetClient();
+            var httpClient = BoongalooHttpClient.GetClient();
 
             var rspPatchTrip = await httpClient.PatchAsync("api/trips/" + id.ToString(),
                  new StringContent(JsonConvert.SerializeObject(tripPatchDoc), System.Text.Encoding.Unicode, "application/json"))

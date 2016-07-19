@@ -132,57 +132,7 @@ namespace BoongalooCompany.IdentityServer.Services
 
                 if (userWithMatchingEmailClaim == null)
                 {
-                    // create a new account
-                    var newUser = new User();
-                    newUser.Subject = Guid.NewGuid().ToString();
-                    newUser.IsActive = true;
-
-                    // add the external identity provider as login provider
-                    newUser.UserLogins.Add(new UserLogin()
-                    {
-                        Subject = newUser.Subject,
-                        LoginProvider = context.ExternalIdentity.Provider,
-                        ProviderKey = context.ExternalIdentity.ProviderId
-                    });
-
-                    // create a list of claims from the information we got from the external provider
-                    // this can be provider-specific
-                    if (context.ExternalIdentity.Provider.ToLowerInvariant() == "google")
-                    {
-                        newUser.UserClaims = context.ExternalIdentity
-                            .Claims.Where(c =>
-                               c.Type.ToLowerInvariant() == Constants.ClaimTypes.GivenName
-                            || c.Type.ToLowerInvariant() == Constants.ClaimTypes.FamilyName
-                            || c.Type.ToLowerInvariant() == Constants.ClaimTypes.Email)
-                            .Select<Claim, UserClaim>(c => new UserClaim()
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Subject = newUser.Subject,
-                                ClaimType = c.Type.ToLowerInvariant(),
-                                ClaimValue = c.Value
-                            }).ToList();
-                    }
-
-                    // create a new user with the FreeUser role by default
-                    newUser.UserClaims.Add(new UserClaim()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Subject = newUser.Subject,
-                        ClaimType = "role",
-                        ClaimValue = "FreeUser"
-                    });
-
-                    // add the user
-                    userRepository.AddUser(newUser);
-
-                    // use this new user
-                    context.AuthenticateResult = new AuthenticateResult(
-                       newUser.Subject,
-                       newUser.UserClaims.First(c => c.ClaimType == Constants.ClaimTypes.GivenName).ClaimValue,
-                       newUser.UserClaims.Select<UserClaim, Claim>(uc => new Claim(uc.ClaimType, uc.ClaimValue)),
-                       authenticationMethod: Constants.AuthenticationMethods.External,
-                       identityProvider: context.ExternalIdentity.Provider);
-
+                    context.AuthenticateResult = new AuthenticateResult("No user with the matching email claim.");
                     return Task.FromResult(0);
                 }
 

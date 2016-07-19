@@ -22,8 +22,8 @@
         @Html.TextBoxFor(m => m.PhoneNumber, new {@class = "form-control"})
     </div>
 
-    <div class="form-group">
-        <label for="Last">Your subscription</label>
+    <div class="form-group" required="required">
+        <label for="Last">Your Boongaloo role</label>
         @Html.DropDownListFor(m => m.Role, Model.Roles, new { @class = "form-control" })
     </div>
     <div class="form-group">

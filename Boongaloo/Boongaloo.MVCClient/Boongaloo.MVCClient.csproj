@@ -156,10 +156,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ClaimsTransformations.cs" />
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\HttpClientExtensions.cs" />
     <Compile Include="Helpers\TokenHelper.cs" />
-    <Compile Include="Helpers\TripGalleryHttpClient.cs" />
+    <Compile Include="Helpers\BoongalooHttpClient.cs" />
     <Compile Include="Models\PictureCreateViewModel.cs" />
     <Compile Include="Models\PicturesIndexViewModel.cs" />
     <Compile Include="Models\TripCreateViewModel.cs" />

@@ -26,7 +26,7 @@ namespace Boongaloo.API
              new IdentityServerBearerTokenAuthenticationOptions
              {
                  Authority = Constants.BoongalooSTS,
-                 RequiredScopes = new[] { "gallerymanagement" }
+                 RequiredScopes = new[] { "boongaloomanagement" }
              });
             
             var config = WebApiConfig.Register();

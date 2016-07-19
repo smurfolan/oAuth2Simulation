@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Boongaloo;
 
 namespace BoongalooCompany.IdentityServer.Config
 {
@@ -15,31 +16,26 @@ namespace BoongalooCompany.IdentityServer.Config
                 { 
                     StandardScopes.OpenId,
                     StandardScopes.ProfileAlwaysInclude,
-                    StandardScopes.Address, 
+                    StandardScopes.Address,
                     // Needed when we are working with refresh tokens
-                    StandardScopes.OfflineAccess,                    
+                    StandardScopes.OfflineAccess,            
                     new Scope
                     { 
-                        Name = "gallerymanagement",
-                        DisplayName = "Gallery Management",
-                        Description = "Allow the application to manage galleries on your behalf.",
+                        Name = "boongaloomanagement",
+                        DisplayName = "Boongaloo Management",
+                        Description = "Allow the application to manage boongaloo related entities on your behalf.",
                         Type = ScopeType.Resource,
-                        // Once we ask for the gallery management scope, in the access token we receive,
+                        // Once we ask for the boongaloo management scope, in the access token we receive,
                         // we will have a role claim.
                         Claims = new List<ScopeClaim>()
                         {
-                            new ScopeClaim("role", false)
-                        }
-                    },
-                    new Scope
-                    { 
-                        Name = "roles",
-                        DisplayName = "Role(s)",
-                        Description = "Allow the application to see your role(s).",
-                        Type = ScopeType.Identity,
-                        Claims = new List<ScopeClaim>()
-                        {
-                            new ScopeClaim("role", true)
+                            // All of these claims go into the access token.
+                            new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.Role, false),
+                            new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.Email),
+                            new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.PhoneNumber),
+                            new ScopeClaim("skypename"),
+                            new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.GivenName),
+                            new ScopeClaim(IdentityServer3.Core.Constants.ClaimTypes.FamilyName)
                         }
                     }
                 };

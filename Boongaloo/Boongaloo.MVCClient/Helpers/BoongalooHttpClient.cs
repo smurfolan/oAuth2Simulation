@@ -10,7 +10,7 @@ using Boongaloo;
 
 namespace Boongaloo.MVCClient.Helpers
 {
-    public static class TripGalleryHttpClient
+    public static class BoongalooHttpClient
     {
 
         public static HttpClient GetClient()
@@ -47,7 +47,7 @@ namespace Boongaloo.MVCClient.Helpers
             // Expired. Get a new one
             var tokenEndpointClient = new TokenClient(
                 Constants.BoongalooSTSTokenEndpoint,
-                "tripgalleryhybrid",
+                "boongaloohybrid",
                 Constants.BoongalooClientSecret);
 
             var requestRefreshTokenResponse =
