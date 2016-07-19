@@ -150,6 +150,7 @@
     <Compile Include="Areas\Recruitment\Controllers\RecruiterRelatedInfoController.cs" />
     <Compile Include="Areas\Recruitment\Models\Recruiter.cs" />
     <Compile Include="Areas\Recruitment\RecruitmentAreaRegistration.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PicturesController.cs" />
     <Compile Include="Controllers\TripsController.cs" />
     <Compile Include="Controllers\UserAccountController.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Helpers\HttpClientExtensions.cs" />
     <Compile Include="Helpers\TokenHelper.cs" />
     <Compile Include="Helpers\BoongalooHttpClient.cs" />
+    <Compile Include="Models\BaseUserViewModel.cs" />
     <Compile Include="Models\PictureCreateViewModel.cs" />
     <Compile Include="Models\PicturesIndexViewModel.cs" />
     <Compile Include="Models\TripCreateViewModel.cs" />
@@ -232,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

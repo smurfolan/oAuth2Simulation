@@ -8,7 +8,7 @@ namespace Boongaloo.DTO
 {
     public enum RolesEnum
     {
-        Applicant,
+        JobApplicant,
         Recruiter
     }
 }

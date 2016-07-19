@@ -12,7 +12,7 @@ namespace Boongaloo.MVCClient
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Trips", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "PostAuthorization", id = UrlParameter.Optional }
             );
         }
     }
