@@ -64,6 +64,9 @@ namespace Boongaloo.MVCClient
                         // CLAIMS TRANSFORMATION
                         await ClaimsTransformations.AssignClaimsReceivedFromIdentityServer(n, n.ProtocolMessage.AccessToken);
 
+                        // DB storing
+                        // TODO
+
                         await Task.FromResult(0);
                     },
                     // Fires whenever the middleware has to redirect to the identity provider(In our case, STS).

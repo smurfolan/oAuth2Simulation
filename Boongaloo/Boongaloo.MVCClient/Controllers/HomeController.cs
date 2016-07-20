@@ -10,6 +10,10 @@ namespace Boongaloo.MVCClient.Controllers
         [Authorize]
         public ActionResult PostAuthorization()
         {
+            // Need to determine if the user is available or not in our system. If yes, redirect to a separate view, else go to the bottom one.
+            // That is the place where he has to add additional information and get stored into the DB.
+            
+
             var userRole = ClaimsPrincipal.Current.Claims.First(claim => claim.Type == IdentityModel.JwtClaimTypes.Role).Value;
 
             if(userRole == RolesEnum.JobApplicant.ToString())
