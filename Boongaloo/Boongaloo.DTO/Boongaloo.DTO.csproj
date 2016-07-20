@@ -55,6 +55,7 @@
     <Compile Include="Applicant\Skill.cs" />
     <Compile Include="Applicant\UserData.cs" />
     <Compile Include="Applicant\UserDataContext.cs" />
+    <Compile Include="BoongalooWebApiDto\UserAddedResponse.cs" />
     <Compile Include="PictureForCreation.cs" />
     <Compile Include="RolesEnum.cs" />
     <Compile Include="Trip.cs" />

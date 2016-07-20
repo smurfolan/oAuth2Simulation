@@ -4,7 +4,7 @@ using Boongaloo.DTO.Applicant;
 
 namespace Boongaloo.Repository
 {
-    public class UserDataRepository : IUserDataRepository
+    public class UserDataRepository : IUserDataRepository, IDisposable
     {
         UserDataContext _ctx;
 
