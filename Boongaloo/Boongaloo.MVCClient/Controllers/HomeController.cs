@@ -9,11 +9,9 @@ namespace Boongaloo.MVCClient.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly BoongalooWebApiProxy _boongalooWebApiProxy;
-
         public HomeController()
         {
-            this._boongalooWebApiProxy = new BoongalooWebApiProxy();
+            // this._boongalooWebApiProxy = new BoongalooWebApiProxy();
         }
 
         [Authorize]
@@ -26,7 +24,9 @@ namespace Boongaloo.MVCClient.Controllers
                 .Claims
                 .First(claim => claim.Type == IdentityModel.JwtClaimTypes.Name).Value;
 
-            var userFromStorage = await _boongalooWebApiProxy.GetUserBySubjectAsync(userId);
+            var boongalooWebApiProxy = new BoongalooWebApiProxy();
+
+            var userFromStorage = await boongalooWebApiProxy.GetUserBySubjectAsync(userId);
 
             if (userFromStorage != null)
             {

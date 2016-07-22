@@ -52,7 +52,8 @@ namespace Boongaloo.Repository
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // Do a cleanup
+            // throw new NotImplementedException();
         }
 
         private bool Save()

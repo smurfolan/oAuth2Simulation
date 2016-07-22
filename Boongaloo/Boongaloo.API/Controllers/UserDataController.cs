@@ -22,7 +22,7 @@ namespace Boongaloo.API.Controllers
                 {
                     var searchedUser = udr.GetUser(userSubject);
 
-                    return searchedUser ?? new UserData();
+                    return searchedUser ?? null;
                 }
             }
 
