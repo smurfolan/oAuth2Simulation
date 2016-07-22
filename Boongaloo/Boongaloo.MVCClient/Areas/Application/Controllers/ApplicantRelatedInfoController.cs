@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Boongaloo.DTO.Applicant;
 using Boongaloo.MVCClient.Areas.Application.Models;
 
 namespace Boongaloo.MVCClient.Areas.Application.Controllers
@@ -25,6 +26,13 @@ namespace Boongaloo.MVCClient.Areas.Application.Controllers
             };
 
             return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult SubmitAdditionalUserData(UserData userInfo)
+        {
+
+            return null;
         }
     }
 }
